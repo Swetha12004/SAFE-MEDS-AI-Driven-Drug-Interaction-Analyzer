@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeMeds - Prescription Upload & Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .flash-messages {
+            width: 50%;
+            margin-bottom: 20px;
+        }
+
+        .flash-messages p {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .flash-messages .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .upload-container {
+            background: rgba(72, 120, 217, 0.05);
+            border: 2px dashed rgba(72, 120, 217, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            width: 50%;
+        }
+
+        .upload-container:hover {
+            background: rgba(72, 120, 217, 0.1);
+            border-color: #4878d9;
+        }
+
+        .upload-icon {
+            font-size: 60px;
+            color: #4878d9;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+        }
+
+        .upload-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #f0f0f0;
+            border-radius: 30px;
+            color: #4878d9;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .browse-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .file-name {
+            margin-top: 15px;
+            font-style: italic;
+            color: #4878d9;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+            border: none;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin-top: 20px;
+        }
+
+        .analysis-results h2 {
+            color: #4878d9;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .analysis-results ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .analysis-results li {
+            padding: 10px;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .analysis-results strong {
+            color: #1cb698;
+        }
+            /* Add this at the end of your current CSS */
+    .metadata-row td {
+        padding: 8px 10px;  /* Adds spacing inside cells */
+    }
+
+    .metadata-row {
+        margin-bottom: 10px;  /* Adds space between rows */
+        border-bottom: 1px solid #ddd; /* Optional: Adds a light separator */
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- File Upload Section -->
+        <div class="upload-container">
+            <i class="fas fa-file-medical upload-icon"></i>
+            <h3 class="upload-text">Upload Your Prescription</h3>
+            <p class="upload-info">Select your prescription PDF file</p>
+            
+            <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                <input type="file" id="prescription-upload" name="file" class="file-input" accept=".pdf">
+                <label for="prescription-upload" class="browse-btn">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </label>
+
+                <div id="file-name" class="file-name"></div>
+
+                <button type="submit" class="upload-btn">
+                    <i class="fas fa-upload"></i> Upload Prescription
+                </button>
+            </form>
+        </div>
+
+        <!-- Analysis Results Section -->
+        {% if output %}
+        <h2 class="text-primary font-weight-bold">Extracted Information</h2>
+    
+        <div class="card p-3 shadow-sm">
+            <p><strong class="text-success"></strong> {{ output[0].doctor_notes }}</p>
+
+            <!-- Collapsible Metadata Button -->
+            <button class="btn btn-info mb-2 upload-btn" type="button" onclick="toggleMetadata()">
+                Show Metadata
+            </button>            
+
+            <!-- Metadata Collapsible Section -->
+            <div id="metadataCollapse" style="display: none;">
+                <table class="table table-bordered">
+                    <tbody>
+                        {% for key, value in output[0].items() %}
+                            {% if key != "doctor_notes" %}  {# Skip doctor_notes from showing in metadata #}
+                            <tr class="metadata-row">
+                                <td><strong>{{ key | replace("_", " ") | title }}</strong></td>
+
+
+                                <td>{{ value }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    
+    </div>
+
+    <script>
+        // Show/hide metadata on button click
+        function toggleMetadata() {
+            var metadataSection = document.getElementById("metadataCollapse");
+            if (metadataSection.style.display === "none") {
+                metadataSection.style.display = "block";
+            } else {
+                metadataSection.style.display = "none";
+            }
+        }
+
+        // Display selected file name
+        const fileInput = document.getElementById('prescription-upload');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileNameDisplay.textContent = this.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+    </script>
+</body>
+</html>

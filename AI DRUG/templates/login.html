@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mediCare - Login & Signup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: white;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 380px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: -1;
+        }
+
+        .logo {
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            font-size: 40px;
+            color: #4878d9;
+            animation: pulse 2s infinite;
+        }
+
+        .brand-name {
+            color: #4878d9;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-name span {
+            color: #1cb698;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .form-box h2 {
+            color: #4878d9;
+            margin-bottom: 30px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-box h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 25%;
+            border-radius: 10px;
+        }
+
+        .input-box {
+            position: relative;
+            margin: 25px 0;
+        }
+
+        .input-box i {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: #4878d9;
+            font-size: 18px;
+            transition: 0.3s;
+            z-index: 1;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid rgba(72, 120, 217, 0.3);
+            background: white;
+            border-radius: 30px;
+            outline: none;
+            color: #333;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-box label {
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 16px;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .input-box input:focus ~ label,
+        .input-box input:valid ~ label {
+            top: -5px;
+            left: 20px;
+            font-size: 12px;
+            color: white;
+            background: #4878d9;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .input-box input:focus,
+        .input-box input:valid {
+            border-color: #4878d9;
+            box-shadow: 0 0 0 2px rgba(72, 120, 217, 0.1);
+        }
+
+        .input-box input:focus ~ i,
+        .input-box input:valid ~ i {
+            color: #1cb698;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0 25px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .remember-forgot label input {
+            margin-right: 5px;
+            accent-color: #1cb698;
+        }
+
+        .remember-forgot a {
+            color: #4878d9;
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            color: #1cb698;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.5s;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        .toggle-text {
+            color: #555;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .toggle-text a {
+            color: #1cb698;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 5px;
+            transition: 0.3s;
+        }
+
+        .toggle-text a:hover {
+            color: #4878d9;
+            text-decoration: underline;
+        }
+
+        .social-login {
+            margin-top: 25px;
+        }
+
+        .social-login p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 1px;
+            background: rgba(72, 120, 217, 0.3);
+            top: 50%;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 50%;
+            color: #4878d9;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: rgba(28, 182, 152, 0.2);
+            color: #1cb698;
+            transform: translateY(-3px);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(72, 120, 217, 0.3);
+            border-radius: 50%;
+            border-top-color: #1cb698;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-animate {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="brand-name">Safe<span>Meds</span></div>
+        <div class="form-box">
+            <h2 id="form-title">Login</h2>
+            <form id="auth-form">
+                <div class="input-box">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn" id="submit-btn">Login to mediCare</button>
+                <div class="loading" id="loading"></div>
+                <p class="toggle-text">Don't have an account?<a href="#" id="toggle-form">Sign up</a></p>
+            </form>
+
+            <div class="social-login">
+                <p>Or login with</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-google"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-apple"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const formTitle = document.getElementById("form-title");
+        const authForm = document.getElementById("auth-form");
+        const toggleForm = document.getElementById("toggle-form");
+        const submitBtn = document.getElementById("submit-btn");
+        const loading = document.getElementById("loading");
+
+        toggleForm.addEventListener("click", (e) => {
+            e.preventDefault();
+            
+            authForm.style.opacity = 0;
+            
+            setTimeout(() => {
+                if (formTitle.innerText === "Login") {
+                    formTitle.innerText = "Sign Up";
+                    authForm.innerHTML = `
+                        <div class="input-box">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="name" required>
+                            <label>Full Name</label>
+                        </div>
+                        <div class="input-box">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" required>
+                            <label>Email</label>
+                        </div>
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" required>
+                            <label>Password</label>
+                        </div>
+                        <div class="remember-forgot">
+                            <label><input type="checkbox"> I agree to the Terms</label>
+                        </div>
+                        <button type="submit" class="btn" id="submit-btn">Join mediCare</button>
+                        <div class="loading" id="loading"></div>
+                        <p class="toggle-text">Already have an account?<a href="#" id="toggle-form">Login</a></p>
+                    `;
+                } else {
+                    formTitle.innerText = "Login";
+                    authForm.innerHTML = `
+                        <div class="input-box">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" required>
+                            <label>Email</label>
+                        </div>
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" required>
+                            <label>Password</label>
+                        </div>
+                        <div class="remember-forgot">
+                            <label><input type="checkbox"> Remember me</label>
+                            <a href="#">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn" id="submit-btn">Login to mediCare</button>
+                        <div class="loading" id="loading"></div>
+                        <p class="toggle-text">Don't have an account?<a href="#" id="toggle-form">Sign up</a></p>
+                    `;
+                }
+                
+                authForm.classList.add('form-animate');
+                authForm.style.opacity = 1;
+                
+                document.getElementById("toggle-form").addEventListener("click", arguments.callee);
+                document.getElementById("submit-btn").addEventListener("click", handleSubmit);
+                document.getElementById("loading").style.display = "none";
+            }, 300);
+        });
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            submitBtn.style.display = "none";
+            loading.style.display = "block";
+            
+            setTimeout(() => {
+                submitBtn.style.display = "block";
+                loading.style.display = "none";
+                if (formTitle.innerText === "Login") {
+                    window.location.href = 'index1';
+                    console.log('ok')
+                } else {
+                    alert("mediCare account created successfully!");
+                }
+            }, 1500);
+        }
+
+        submitBtn.addEventListener("click", handleSubmit);
+
+        window.addEventListener('load', () => {
+            authForm.classList.add('form-animate');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeMeds - AI Drug Interaction Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 220px 1fr 300px;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            width:300px;
+            z-index: 100;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .logo-container i {
+            font-size: 40px;
+            color: #4878d9;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-container h1 {
+            color: #4878d9;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container h1 span {
+            color: #1cb698;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .navigation ul {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .navigation .nav-item {
+            margin: 8px 0;
+        }
+
+        .navigation .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .navigation .nav-item.active a,
+        .navigation .nav-item a:hover {
+            background-color: rgba(72, 120, 217, 0.1);
+            color: #4878d9;
+            border-left: 3px solid #1cb698;
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #4878d9;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(72, 120, 217, 0.2);
+            text-align: center;
+        }
+
+        .doctor-image {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            border: 2px solid #1cb698;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-image i {
+            font-size: 40px;
+            color: #4878d9;
+        }
+
+        .logout-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            border-radius: 30px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 30px;
+            margin-left: 220px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #4878d9;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-header h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            max-width: 800px;
+        }
+
+        .hero-section {
+            margin-bottom: 40px;
+            animation: fadeIn 0.7s forwards;
+        }
+
+        .hero-image {
+            height: 250px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #4878d9;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: 0;
+        }
+
+        .hero-image i {
+            font-size: 60px;
+            color: #1cb698;
+            margin-right: 20px;
+            z-index: 1;
+        }
+
+        .hero-image span {
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        .features-section h2 {
+            font-size: 22px;
+            color: #4878d9;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .features-section h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.9s forwards;
+        }
+
+        .feature-card {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.3);
+        }
+
+        .icon-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .icon-container i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .feature-image {
+            height: 150px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4878d9;
+            font-size: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .feature-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: 0;
+        }
+
+        .feature-image i {
+            font-size: 30px;
+            color: #1cb698;
+            margin-right: 10px;
+            z-index: 1;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            animation: fadeIn 1.1s forwards;
+        }
+
+        .info-content h2 {
+            font-size: 22px;
+            color: #4878d9;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .info-content h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .info-content p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+            margin-top: 15px;
+        }
+
+        .info-list {
+            list-style-position: inside;
+            margin-left: 5px;
+        }
+
+        .info-list li {
+            margin-bottom: 10px;
+            color: #555;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .info-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #1cb698;
+            font-weight: bold;
+        }
+
+        .info-image {
+            height: 100%;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4878d9;
+            font-size: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .info-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: 0;
+        }
+
+        .info-image i {
+            font-size: 50px;
+            color: #1cb698;
+            z-index: 1;
+        }
+
+        .illustration-container {
+            grid-column: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: fadeIn 1.3s forwards;
+        }
+
+        .illustration-content {
+            position: fixed;
+            width: 280px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            height: calc(100vh - 60px);
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .illustration-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: -1;
+        }
+
+        .illustration-icon {
+            font-size: 60px;
+            color: #4878d9;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .illustration-title {
+            color: #4878d9;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .illustration-title span {
+            color: #1cb698;
+        }
+
+        .illustration-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .illustration-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(72, 120, 217, 0.3);
+        }
+
+        .indicator.active {
+            background-color: #1cb698;
+        }
+
+        .get-started-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.5s;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+            margin-top: auto;
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 220px 1fr;
+            }
+            
+            .illustration-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-image {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+                border-radius: 0 0 20px 20px;
+            }
+            
+            .navigation .nav-item a {
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .doctor-image {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <i class="fas fa-capsules"></i>
+                <h1>Safe<span>Meds</span></h1>
+                <p class="tagline">AI-Powered Drug Safety</p>
+            </div>
+            <nav class="navigation">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('index1') }}"><i class="fas fa-home icon"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('upload') }}"><i class="fas fa-exchange-alt icon"></i> Interaction Checker</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('risk') }}"><i class="fas fa-hourglass-half icon"></i> Long-Term Risk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('dashboard') }}"><i class="fas fa-chart-pie icon"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('contact') }}"><i class="fas fa-user-md icon"></i> Contact Us</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="doctor-image">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <a href="login" class="logout-button">Login/SignUp <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <h2>AI-Based Drug Interaction and Side Effect Prediction</h2>
+                <p>Our SafeMeds platform is designed to streamline the process of analyzing, predicting, and visualizing drug interactions and potential side effects. Leveraging the latest in AI and machine learning, our platform provides healthcare professionals with the tools they need to make informed medication decisions quickly and accurately.</p>
+            </header>
+
+            <section class="hero-section">
+                <div class="hero-image">
+                    <i class="fas fa-pills"></i>
+                    <span>AI-Powered Drug Safety Analysis</span>
+                </div>
+            </section>
+
+            <section class="features-section">
+                <h2>Core Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon-container">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <h3>Drug Interaction Analysis</h3>
+                        <p>Automatically analyze potential interactions between multiple medications, categorized by severity and clinical significance.</p>
+                        <div class="feature-image">
+                            <i class="fas fa-exchange-alt"></i>
+                            Drug Interaction Analysis
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon-container">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Data Visualization</h3>
+                        <p>Visualize drug interaction data in an intuitive and interactive format, focusing on specific concerns or comprehensive safety profiles.</p>
+                        <div class="feature-image">
+                            <i class="fas fa-chart-bar"></i>
+                            Interactive Visualization
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon-container">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Customized Risk Assessment</h3>
+                        <p>Extract specific risk profiles based on patient demographics and medical history, powered by advanced machine learning algorithms.</p>
+                        <div class="feature-image">
+                            <i class="fas fa-user-shield"></i>
+                            Personalized Risk Profiles
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="icon-container">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Side Effect Prediction</h3>
+                        <p>Predict potential adverse reactions using ensemble-based machine learning models to provide proactive insights for safer prescribing.</p>
+                        <div class="feature-image">
+                            <i class="fas fa-diagnoses"></i>
+                            Predictive Analysis
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="info-content">
+                    <h2>How SafeMeds Works</h2>
+                    <p>Our AI analyzes thousands of clinical studies, drug databases, and patient records to provide accurate, personalized medication safety information.</p>
+                    <ul class="info-list">
+                        <li>Input your medications and patient profile</li>
+                        <li>Our AI analyzes potential interactions</li>
+                        <li>Review detailed safety reports and visualizations</li>
+                        <li>Make informed decisions with confidence</li>
+                    </ul>
+                </div>
+                <div class="info-image">
+                    <i class="fas fa-laptop-medical"></i>
+                </div>
+            </section>
+        </main>
+        <div class="illustration-container">
+            <div class="illustration-content">
+                <div>
+                    <i class="fas fa-heartbeat illustration-icon"></i>
+                    <h3 class="illustration-title">Safe<span>Meds</span></h3>
+                    <p class="illustration-text">Revolutionizing patient safety with AI-powered drug interaction analysis and adverse reaction prediction.</p>
+                </div>
+                <div class="illustration-indicators">
+                    <div class="indicator active"></div>
+                    <div class="indicator"></div>
+                    <div class="indicator"></div>
+                </div>
+                <button class="get-started-btn">Get Started</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

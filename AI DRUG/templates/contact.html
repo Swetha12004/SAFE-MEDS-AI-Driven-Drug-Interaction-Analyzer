@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeMeds - Contact Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            width:300px;
+            z-index: 100;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .logo-container i {
+            font-size: 40px;
+            color: #4878d9;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-container h1 {
+            color: #4878d9;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container h1 span {
+            color: #1cb698;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .navigation ul {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .navigation .nav-item {
+            margin: 8px 0;
+        }
+
+        .navigation .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .navigation .nav-item.active a,
+        .navigation .nav-item a:hover {
+            background-color: rgba(72, 120, 217, 0.1);
+            color: #4878d9;
+            border-left: 3px solid #1cb698;
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #4878d9;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(72, 120, 217, 0.2);
+            text-align: center;
+        }
+
+        .doctor-image {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            border: 2px solid #1cb698;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-image i {
+            font-size: 40px;
+            color: #4878d9;
+        }
+
+        .logout-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            border-radius: 30px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 30px;
+            margin-left: 220px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #4878d9;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-header h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            max-width: 800px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border: 1px solid rgba(72, 120, 217, 0.1);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .contact-info h3 {
+            color: #4878d9;
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-info h3::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #1cb698;
+            bottom: -5px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .contact-details {
+            list-style: none;
+        }
+
+        .contact-details li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-details li i {
+            width: 35px;
+            height: 35px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 50%;
+            color: #4878d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .contact-details li span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-form {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border: 1px solid rgba(72, 120, 217, 0.1);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .contact-form h3 {
+            color: #4878d9;
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-form h3::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #1cb698;
+            bottom: -5px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4878d9;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 14px;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #1cb698;
+            box-shadow: 0 0 5px rgba(28, 182, 152, 0.3);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+            width: 100%;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        .map-container {
+            margin-top: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            height: 400px;
+            border: 1px solid rgba(72, 120, 217, 0.1);
+            animation: fadeIn 0.5s forwards;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-placeholder {
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 991px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <i class="fas fa-capsules"></i>
+                <h1>Safe<span>Meds</span></h1>
+                <p class="tagline">AI-Powered Drug Safety</p>
+            </div>
+            
+            <nav class="navigation">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('index1') }}"><i class="fas fa-home icon"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('upload') }}"><i class="fas fa-exchange-alt icon"></i> Interaction Checker</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('risk') }}"><i class="fas fa-hourglass-half icon"></i> Long-Term Risk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('dashboard') }}"><i class="fas fa-chart-pie icon"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('contact') }}"><i class="fas fa-user-md icon"></i> Contact Us</a>
+                    </li>
+                    
+                </ul>
+            </nav>  
+            <div class="sidebar-footer">
+                <a href="index1.html" class="logout-button">BACK <i class="fas fa-sign-out-alt"></i></a>
+            </div>          
+        </aside>
+        
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Contact Us</h2>
+                <p>Have questions or need assistance with your medications? Our team of pharmacists and healthcare professionals are here to help you. Feel free to reach out to us through any of the channels below.</p>
+            </header>
+            
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <ul class="contact-details">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>SMVEC, Madagadipet, Puducherry</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone-alt"></i>
+                            <span>+91 12345 67890</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>safemeds@gmail.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <span>Monday - Saturday: 7:00 AM - 7:00 PM</span>
+                            <span>|| Sunday: 7:00 AM - 5:00 PM</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-info-circle"></i>
+                            <span>24/7 Emergency Support Available</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email address">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" placeholder="What is this regarding?">
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" placeholder="How can we help you?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+</body>
+</html>

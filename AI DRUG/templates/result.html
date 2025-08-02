@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeMeds - Long-Term Drug Risk Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+<style>
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .results-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.9s forwards;
+        }
+        body {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4; 
+}
+
+.results-container {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(72, 120, 217, 0.2);
+    width: 600px;
+    text-align: center; 
+}
+        .results-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            width: 600px;
+            align-items: center;
+        }
+
+        .results-container h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .results-container h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .risk-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(72, 120, 217, 0.05);
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .risk-meter {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .risk-meter svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .risk-meter circle {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transform: translate(100px, 100px);
+        }
+
+        .risk-meter .background {
+            stroke: rgba(72, 120, 217, 0.1);
+        }
+
+        .risk-meter .progress {
+            stroke: #1cb698;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 70;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .risk-meter .risk-value {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 700;
+            color: #4878d9;
+        }
+
+        .risk-meter .risk-label {
+            position: absolute;
+            font-size: 14px;
+            color: #555;
+            margin-top: 35px;
+        }
+
+        .risk-details {
+            flex: 1;
+            margin-left: 30px;
+        }
+
+        .risk-details h4 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 15px;
+        }
+
+        .risk-factor {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.1);
+        }
+
+        .risk-factor:last-child {
+            border-bottom: none;
+        }
+
+        .risk-factor-name {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .risk-factor-value {
+            font-weight: 700;
+            color: #4878d9;
+        }
+
+        .risk-factor-value.high {
+            color: #e74c3c;
+        }
+
+        .risk-factor-value.medium {
+            color: #f39c12;
+        }
+
+        .risk-factor-value.low {
+            color: #1cb698;
+        }
+
+        .risk-recommendations {
+            margin-top: 30px;
+        }
+
+        .risk-recommendations h4 {
+            font-size: 16px;
+            color: #4878d9;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: rgba(72, 120, 217, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-item:hover {
+            background-color: rgba(28, 182, 152, 0.05);
+            transform: translateX(5px);
+        }
+
+        .recommendation-icon {
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .recommendation-icon i {
+            font-size: 14px;
+            color: white;
+        }
+
+        .recommendation-content p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .visualization-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 1.1s forwards;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .chart-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .chart-card h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .chart-card h3::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .chart-placeholder {
+            height: 250px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4878d9;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+
+        .chart-placeholder i {
+            font-size: 30px;
+            color: #1cb698;
+            margin-right: 10px;
+        }
+
+        .illustration-container {
+            grid-column: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: fadeIn 1.3s forwards;
+        }
+
+        .illustration-content {
+            position: fixed;
+            width: 280px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            height: calc(100vh - 60px);
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .illustration-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(72, 120, 217, 0.05) 0%, transparent 80%);
+            z-index: -1;
+        }
+
+        .illustration-icon {
+            font-size: 60px;
+            color: #4878d9;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .illustration-title {
+            color: #4878d9;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .illustration-title span {
+            color: #1cb698;
+        }
+
+        .illustration-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .help-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.5s;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+            margin-top: auto;
+        }
+
+        .help-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 220px 1fr;
+            }
+            
+            .illustration-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .input-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .risk-summary {
+                flex-direction: column;
+            }
+            
+            .risk-details {
+                margin-left: 0;
+                margin-top: 30px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+                border-radius: 0 0 20px 20px;
+            }
+            
+            .navigation .nav-item a {
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .doctor-image {
+                display: none;
+            }
+        }
+
+</style>
+</head>
+<body>
+    <section class="results-section">
+        <div class="results-container">
+            <h3>Risk Assessment Results</h3>
+            <div class="risk-summary">
+                <div class="risk-details">
+                    <h4>Primary Risk Factors</h4>
+
+                    {% if risk_severity is not none %}
+                        {% if risk_severity == 0 %}
+                            <p>The medication risk level is <b style="color: green;">Low</b>.</p>
+                        {% elif risk_severity == 1 %}
+                            <p>The medication risk level is <b style="color: red;">High</b>.</p>
+                        {% elif risk_severity == 2 %}
+                            <p>The medication risk level is <b style="color: orange;">Moderate</b>.</p>
+                        {% else %}
+                            <p>Unexpected risk level detected. Please check the input.</p>
+                        {% endif %}
+                    {% else %}
+                        <p>An error occurred during prediction. Please try again later.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeMeds - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            width:300px;
+            z-index: 100;
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .logo-container i {
+            font-size: 40px;
+            color: #4878d9;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-container h1 {
+            color: #4878d9;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container h1 span {
+            color: #1cb698;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .navigation ul {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .navigation .nav-item {
+            margin: 8px 0;
+        }
+
+        .navigation .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .navigation .nav-item.active a,
+        .navigation .nav-item a:hover {
+            background-color: rgba(72, 120, 217, 0.1);
+            color: #4878d9;
+            border-left: 3px solid #1cb698;
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #4878d9;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid rgba(72, 120, 217, 0.2);
+            text-align: center;
+        }
+
+        .doctor-image {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            border: 2px solid #1cb698;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-image i {
+            font-size: 40px;
+            color: #4878d9;
+        }
+
+        .logout-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            border-radius: 30px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.5);
+        }
+
+        .main-content {
+            grid-column: 2;
+            padding: 30px;
+            margin-left: 220px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #4878d9;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-header h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #1cb698;
+            bottom: -10px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            max-width: 800px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.7s forwards;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(28, 182, 152, 0.3);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px rgba(28, 182, 152, 0.3);
+        }
+
+        .stat-icon i {
+            font-size: 25px;
+            color: white;
+        }
+
+        .stat-info h3 {
+            font-size: 24px;
+            color: #4878d9;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .chart-container {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            margin-bottom: 30px;
+            animation: fadeIn 0.9s forwards;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-header h3 {
+            font-size: 18px;
+            color: #4878d9;
+        }
+
+        .chart-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-option {
+            padding: 8px 15px;
+            background-color: rgba(72, 120, 217, 0.1);
+            border-radius: 20px;
+            color: #4878d9;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chart-option:hover, .chart-option.active {
+            background-color: #4878d9;
+            color: white;
+        }
+
+        .chart-placeholder {
+            height: 250px;
+            background: rgba(72, 120, 217, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #4878d9;
+        }
+
+        .recent-activity {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+            margin-bottom: 30px;
+            animation: fadeIn 1.1s forwards;
+        }
+
+        .recent-activity h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(72, 120, 217, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(72, 120, 217, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .activity-icon i {
+            font-size: 18px;
+            color: #4878d9;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .activity-content p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .medication-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            animation: fadeIn 1.3s forwards;
+        }
+
+        .medication-list {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .medication-list h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+        }
+
+        .medication-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .medication-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background-color: rgba(72, 120, 217, 0.1);
+            color: #4878d9;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .medication-table tr {
+            border-bottom: 1px solid rgba(72, 120, 217, 0.1);
+        }
+
+        .medication-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .medication-table td {
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .medication-table .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.high {
+            background-color: rgba(255, 82, 82, 0.1);
+            color: #ff5252;
+        }
+
+        .status.medium {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status.low {
+            background-color: rgba(28, 182, 152, 0.1);
+            color: #1cb698;
+        }
+
+        .quick-actions {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(72, 120, 217, 0.2);
+        }
+
+        .quick-actions h3 {
+            font-size: 18px;
+            color: #4878d9;
+            margin-bottom: 20px;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: rgba(72, 120, 217, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background-color: rgba(28, 182, 152, 0.1);
+            transform: translateX(5px);
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(to right, #1cb698, #4878d9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .action-icon i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .action-text {
+            flex: 1;
+        }
+
+        .action-text h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .action-text p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .medication-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+                border-radius: 0 0 20px 20px;
+            }
+            
+            .navigation .nav-item a {
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .doctor-image {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <i class="fas fa-capsules"></i>
+                <h1>Safe<span>Meds</span></h1>
+                <p class="tagline">AI-Powered Drug Safety</p>
+            </div>
+            <nav class="navigation">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('index1') }}"><i class="fas fa-home icon"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('upload') }}"><i class="fas fa-exchange-alt icon"></i> Interaction Checker</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="{{ url_for('risk') }}"><i class="fas fa-hourglass-half icon"></i> Long-Term Risk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('dashboard') }}"><i class="fas fa-chart-pie icon"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('contact') }}"><i class="fas fa-user-md icon"></i> Contact Us</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index1.html" class="logout-button">BACK <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Dashboard</h2>
+                <p>Welcome to your SafeMeds dashboard. Here you can view your medication analysis, track interaction data, and access quick actions for medication safety.</p>
+            </header>
+
+            <section class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Active Medications</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Potential Interactions</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>86%</h3>
+                        <p>Safety Score</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>7</h3>
+                        <p>Days Since Last Check</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="chart-container">
+                <div class="chart-section">
+                    <h3>Predicted Side Effects</h3>
+                    <canvas id="sideEffectsChart"></canvas>
+                </div>
+                
+                <div class="chart-section">
+                    <h3>Long-Term Risk Analysis</h3>
+                    <canvas id="riskChart"></canvas>
+                </div>
+                
+            </section>
+
+            <section class="recent-activity">
+                <h3>Recent Activity</h3>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>New Medication Added</h4>
+                            <p>Lisinopril 10mg was added to your medication list</p>
+                            <span class="activity-time">Today, 10:45 AM</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Interaction Detected</h4>
+                            <p>Potential interaction between Warfarin and Aspirin</p>
+                            <span class="activity-time">Yesterday, 3:20 PM</span>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Safety Analysis Updated</h4>
+                            <p>Your medication safety profile has been refreshed</p>
+                            <span class="activity-time">Mar 06, 2025, 9:15 AM</span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="medication-section">
+                <div class="medication-list">
+                    <h3>Your Medications</h3>
+                    <table class="medication-table">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Frequency</th>
+                                <th>Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lisinopril</td>
+                                <td>10mg</td>
+                                <td>Once daily</td>
+                                <td><span class="status low">Low</span></td>
+                            </tr>
+                            <tr>
+                                <td>Warfarin</td>
+                                <td>5mg</td>
+                                <td>Once daily</td>
+                                <td><span class="status high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>Metformin</td>
+                                <td>500mg</td>
+                                <td>Twice daily</td>
+                                <td><span class="status low">Low</span></td>
+                            </tr>
+                            <tr>
+                                <td>Aspirin</td>
+                                <td>81mg</td>
+                                <td>Once daily</td>
+                                <td><span class="status medium">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td>Atorvastatin</td>
+                                <td>20mg</td>
+                                <td>Once daily</td>
+                                <td><span class="status low">Low</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-button">
+                        <div class="action-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="action-text">
+                            <h4>Add Medication</h4>
+                            <p>Include a new medication to your profile</p>
+                        </div>
+                    </div>
+                    <div class="action-button">
+                        <div class="action-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="action-text">
+                            <h4>Check Interactions</h4>
+                            <p>Run a comprehensive analysis on interactions</p>
+                        </div>
+                    </div>
+                    <div class="action-button">
+                        <div class="action-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <div class="action-text">
+                            <h4>Export Report</h4>
+                            <p>Download medication analysis as PDF</p>
+                        </div>
+                    </div>
+                    <div class="action-button">
+                        <div class="action-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="action-text">
+                            <h4>Set Reminders</h4>
+                            <p>Create medication dosage reminders</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1️⃣ Side Effects Prediction - Bar Chart
+        const sideEffectsCtx = document.getElementById("sideEffectsChart").getContext("2d");
+        new Chart(sideEffectsCtx, {
+            type: "bar",
+            data: {
+                labels: ["Nausea", "Dizziness", "Fatigue", "Headache", "Liver Damage"],
+                datasets: [{
+                    label: "Severity Score",
+                    data: [3, 5, 2, 4, 8], // Example values
+                    backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff"]
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 10 } }
+            }
+        });
+    
+        // 2️⃣ Long-Term Risk - Line Chart
+        const riskCtx = document.getElementById("riskChart").getContext("2d");
+        new Chart(riskCtx, {
+            type: "line",
+            data: {
+                labels: ["1 Month", "3 Months", "6 Months", "1 Year", "2 Years"],
+                datasets: [{
+                    label: "Risk Level",
+                    data: [2, 4, 6, 8, 10], // Example values
+                    borderColor: "#ff5733",
+                    backgroundColor: "rgba(255, 87, 51, 0.2)",
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 10 } }
+            }
+        });
+    });
+    </script>
+</body>
+</html>
